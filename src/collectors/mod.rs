@@ -1,10 +1,18 @@
 pub mod cpu;
 pub mod memory;
 pub mod system;
+pub mod gpu;
+pub mod network;
+pub mod disk;
+pub mod process;
 
 pub use cpu::{CpuCollector, CpuData};
 pub use memory::{MemoryCollector, MemoryData};
 pub use system::{SystemCollector, SystemData};
+pub use gpu::{GpuCollector, GpuData};
+pub use network::{NetworkCollector, NetworkData};
+pub use disk::{DiskCollector, DiskData};
+pub use process::{ProcessCollector, ProcessData, ProcessInfo};
 
 use anyhow::Result;
 use crate::config::Config;
@@ -45,10 +53,12 @@ impl<const N: usize> RingBuffer<N> {
         result
     }
 
+    #[allow(dead_code)]
     pub fn len(&self) -> usize {
         self.len
     }
 
+    #[allow(dead_code)]
     pub fn is_empty(&self) -> bool {
         self.len == 0
     }
@@ -62,19 +72,26 @@ pub struct Collectors {
     pub cpu: CpuCollector,
     pub memory: MemoryCollector,
     pub system: SystemCollector,
-    // TODO: Add more collectors
-    // pub gpu: Option<GpuCollector>,
-    // pub network: NetworkCollector,
-    // pub disk: DiskCollector,
-    // pub process: ProcessCollector,
+    pub gpu: GpuCollector,
+    pub network: NetworkCollector,
+    pub disk: DiskCollector,
+    pub process: ProcessCollector,
 }
 
 impl Collectors {
-    pub fn new(_config: &Config) -> Result<Self> {
+    pub fn new(config: &Config) -> Result<Self> {
         Ok(Self {
             cpu: CpuCollector::new()?,
             memory: MemoryCollector::new()?,
             system: SystemCollector::new()?,
+            gpu: if config.gpu_enabled {
+                GpuCollector::new()?
+            } else {
+                GpuCollector::new()? // Will just report unavailable
+            },
+            network: NetworkCollector::new()?,
+            disk: DiskCollector::new()?,
+            process: ProcessCollector::new()?,
         })
     }
 
@@ -82,6 +99,10 @@ impl Collectors {
         self.cpu.collect()?;
         self.memory.collect()?;
         self.system.collect()?;
+        self.gpu.collect()?;
+        self.network.collect()?;
+        self.disk.collect()?;
+        self.process.collect()?;
         Ok(())
     }
 }
