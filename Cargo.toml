@@ -1,0 +1,53 @@
+[package]
+name = "system-monitor"
+version = "0.1.0"
+edition = "2021"
+authors = ["kiki"]
+description = "Ultra-lightweight system performance monitor TUI"
+license = "MIT"
+keywords = ["tui", "monitoring", "system", "performance", "terminal"]
+categories = ["command-line-utilities", "visualization"]
+
+[dependencies]
+# TUI Framework
+ratatui = "0.29"
+crossterm = "0.28"
+
+# System Metrics
+sysinfo = "0.32"
+
+# GPU Metrics (NVIDIA) - optional
+nvml-wrapper = { version = "0.10", optional = true }
+
+# Async Runtime
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+
+# CLI Arguments
+clap = { version = "4", features = ["derive"] }
+
+# Configuration
+toml = "0.8"
+serde = { version = "1", features = ["derive"] }
+dirs = "5"
+
+# Error Handling
+anyhow = "1"
+thiserror = "2"
+
+# Time
+chrono = "0.4"
+
+[features]
+default = ["gpu"]
+gpu = ["nvml-wrapper"]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true
