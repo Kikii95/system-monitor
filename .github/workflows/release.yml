@@ -23,6 +23,14 @@ jobs:
             os: windows-latest
             artifact: system-monitor.exe
             archive: system-monitor-windows-x86_64.zip
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            artifact: system-monitor
+            archive: system-monitor-macos-x86_64.tar.gz
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            artifact: system-monitor
+            archive: system-monitor-macos-aarch64.tar.gz
 
     steps:
       - name: Checkout
@@ -48,6 +56,13 @@ jobs:
         run: |
           cd target/${{ matrix.target }}/release
           7z a ../../../${{ matrix.archive }} ${{ matrix.artifact }}
+          cd ../../..
+
+      - name: Package (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar -czvf ../../../${{ matrix.archive }} ${{ matrix.artifact }}
           cd ../../..
 
       - name: Upload artifact

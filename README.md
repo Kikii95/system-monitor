@@ -5,7 +5,7 @@ A blazingly fast, ultra-lightweight system performance monitor for your terminal
 ![Version](https://img.shields.io/badge/version-1.1.1-green)
 ![Rust](https://img.shields.io/badge/rust-1.75%2B-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Platform](https://img.shields.io/badge/platform-linux%20%7C%20windows%20%7C%20wsl2-lightgrey)
+![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-lightgrey)
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -57,10 +57,26 @@ tar -xzf system-monitor-linux-x86_64.tar.gz
 sudo mv system-monitor /usr/local/bin/
 ```
 
+**macOS (Intel):**
+```bash
+curl -LO https://github.com/Kikii95/system-monitor/releases/latest/download/system-monitor-macos-x86_64.tar.gz
+tar -xzf system-monitor-macos-x86_64.tar.gz
+sudo mv system-monitor /usr/local/bin/
+```
+
+**macOS (Apple Silicon):**
+```bash
+curl -LO https://github.com/Kikii95/system-monitor/releases/latest/download/system-monitor-macos-aarch64.tar.gz
+tar -xzf system-monitor-macos-aarch64.tar.gz
+sudo mv system-monitor /usr/local/bin/
+```
+
 **Windows:**
 1. Download `system-monitor-windows-x86_64.zip` from [Releases](https://github.com/Kikii95/system-monitor/releases)
 2. Extract and run `system-monitor.exe`
 3. For best results, use [Windows Terminal](https://aka.ms/terminal)
+
+> **Note:** GPU monitoring requires NVIDIA GPU. On macOS (no NVIDIA), GPU section will show as unavailable.
 
 ### Build from Source
 
