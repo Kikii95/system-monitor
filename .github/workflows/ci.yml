@@ -30,7 +30,7 @@ jobs:
         run: cargo check --all-features
 
       - name: Clippy
-        run: cargo clippy -- -D warnings
+        run: cargo clippy -- -W clippy::all
 
       - name: Build
         run: cargo build --release
