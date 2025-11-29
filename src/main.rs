@@ -47,6 +47,10 @@ struct Args {
     /// Create default config file and exit
     #[arg(long)]
     init_config: bool,
+
+    /// Check system info and exit (no UI)
+    #[arg(long)]
+    check: bool,
 }
 
 fn main() -> Result<()> {
@@ -70,6 +74,44 @@ fn main() -> Result<()> {
                 std::process::exit(1);
             }
         }
+        return Ok(());
+    }
+
+    // Handle --check
+    if args.check {
+        use crate::collectors::Collectors;
+        let config = Config::load(args.config.as_deref())?;
+        let mut collectors = Collectors::new(&config)?;
+        collectors.update()?;
+
+        println!("╔══════════════════════════════════════════╗");
+        println!("║       SYSTEM MONITOR - DIAGNOSTICS       ║");
+        println!("╠══════════════════════════════════════════╣");
+        println!("║ CPU                                      ║");
+        println!("║   Cores: {:>3} physical, {:>3} logical      ║",
+            collectors.cpu.data.physical_cores,
+            collectors.cpu.data.logical_cores);
+        println!("║   Usage: {:>5.1}%                          ║", collectors.cpu.data.global_usage);
+        println!("╠══════════════════════════════════════════╣");
+        println!("║ MEMORY                                   ║");
+        println!("║   Total: {:>5.1} GB                        ║", collectors.memory.data.total as f64 / 1024.0 / 1024.0 / 1024.0);
+        println!("║   Used:  {:>5.1}%                          ║", collectors.memory.data.usage_percent);
+        println!("╠══════════════════════════════════════════╣");
+        println!("║ GPU                                      ║");
+        if collectors.gpu.data.available {
+            println!("║   ✅ {}  ║", format!("{:<30}", collectors.gpu.data.name));
+            println!("║   Driver: {:>30} ║", collectors.gpu.data.driver_version);
+        } else {
+            println!("║   ❌ No NVIDIA GPU detected              ║");
+        }
+        println!("╠══════════════════════════════════════════╣");
+        println!("║ NETWORK                                  ║");
+        println!("║   Interface: {:>27} ║", collectors.network.data.interface);
+        println!("╠══════════════════════════════════════════╣");
+        println!("║ SYSTEM                                   ║");
+        println!("║   OS: {:>34} ║", collectors.system.data.os_name);
+        println!("║   Kernel: {:>30} ║", collectors.system.data.kernel_version);
+        println!("╚══════════════════════════════════════════╝");
         return Ok(());
     }
 
