@@ -71,7 +71,11 @@ impl App {
     pub fn save_config(&mut self) {
         match self.config.save() {
             Ok(_) => {
-                self.status_message = Some("Config saved!".to_string());
+                if let Some(path) = Config::default_path() {
+                    self.status_message = Some(format!("Saved to {}", path.display()));
+                } else {
+                    self.status_message = Some("Config saved!".to_string());
+                }
             }
             Err(e) => {
                 self.status_message = Some(format!("Save failed: {}", e));

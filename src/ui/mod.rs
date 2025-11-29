@@ -2,7 +2,7 @@ mod widgets;
 
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
-    style::{Style, Stylize},
+    style::{Color, Style, Stylize},
     text::{Line, Span},
     widgets::{Block, Borders, Gauge, Paragraph, Sparkline, Row, Table},
     Frame,
@@ -549,7 +549,7 @@ fn render_footer(frame: &mut Frame, app: &App, area: Rect) {
         ));
     } else {
         spans.push(Span::styled(
-            format!("│ {} │ {:.1}s │ v1.0.0", theme.name, app.config.refresh_rate),
+            format!("│ {} │ {:.1}s │ v1.1.0", theme.name, app.config.refresh_rate),
             Style::default().fg(theme.secondary)
         ));
     }
@@ -576,7 +576,7 @@ fn render_help_overlay(frame: &mut Frame, app: &App) {
     frame.render_widget(Clear, popup_area);
 
     let help_text = vec![
-        Line::from(Span::styled("SYSTEM MONITOR v1.0.0", Style::default().fg(theme.primary).bold())),
+        Line::from(Span::styled("SYSTEM MONITOR v1.1.0", Style::default().fg(theme.primary).bold())),
         Line::from(""),
         Line::from(Span::styled("KEYBINDINGS", Style::default().fg(theme.accent).bold())),
         Line::from(""),
@@ -586,7 +586,7 @@ fn render_help_overlay(frame: &mut Frame, app: &App) {
         ]),
         Line::from(vec![
             Span::styled("  T          ", Style::default().fg(theme.primary)),
-            Span::styled("Cycle through themes", Style::default().fg(theme.muted)),
+            Span::styled("Cycle through themes (9 available)", Style::default().fg(theme.muted)),
         ]),
         Line::from(vec![
             Span::styled("  R          ", Style::default().fg(theme.primary)),
@@ -609,13 +609,22 @@ fn render_help_overlay(frame: &mut Frame, app: &App) {
             Span::styled("Save config to file", Style::default().fg(theme.muted)),
         ]),
         Line::from(""),
-        Line::from(Span::styled("THEMES", Style::default().fg(theme.accent).bold())),
+        Line::from(Span::styled("THEMES (press T to cycle)", Style::default().fg(theme.accent).bold())),
         Line::from(""),
         Line::from(vec![
-            Span::styled("  hacker  ", Style::default().fg(theme.success)),
-            Span::styled("matrix  ", Style::default().fg(theme.primary)),
-            Span::styled("minimal  ", Style::default().fg(theme.muted)),
-            Span::styled("cyberpunk", Style::default().fg(theme.danger)),
+            Span::styled("hacker ", Style::default().fg(Color::Rgb(0, 255, 65))),
+            Span::styled("matrix ", Style::default().fg(Color::Rgb(0, 200, 0))),
+            Span::styled("minimal ", Style::default().fg(Color::Rgb(200, 200, 200))),
+        ]),
+        Line::from(vec![
+            Span::styled("cyberpunk ", Style::default().fg(Color::Rgb(255, 0, 64))),
+            Span::styled("dracula ", Style::default().fg(Color::Rgb(189, 147, 249))),
+            Span::styled("nord ", Style::default().fg(Color::Rgb(136, 192, 208))),
+        ]),
+        Line::from(vec![
+            Span::styled("gruvbox ", Style::default().fg(Color::Rgb(250, 189, 47))),
+            Span::styled("tokyo ", Style::default().fg(Color::Rgb(122, 162, 247))),
+            Span::styled("ocean ", Style::default().fg(Color::Rgb(0, 180, 230))),
         ]),
         Line::from(""),
         Line::from(Span::styled("Press Esc or H to close", Style::default().fg(theme.muted).italic())),

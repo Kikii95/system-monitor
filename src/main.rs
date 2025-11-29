@@ -21,7 +21,7 @@ use crate::config::Config;
 #[derive(Parser, Debug)]
 #[command(name = "system-monitor")]
 #[command(author = "kiki")]
-#[command(version = "1.0.0")]
+#[command(version = "1.1.0")]
 #[command(about = "Ultra-lightweight system performance monitor", long_about = None)]
 struct Args {
     /// Refresh rate in seconds
