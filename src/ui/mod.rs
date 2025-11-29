@@ -415,9 +415,12 @@ fn render_disk(frame: &mut Frame, app: &App, area: Rect) {
     )).style(Style::default().fg(theme.muted));
     frame.render_widget(details, disk_layout[1]);
 
-    // I/O (placeholder for now)
-    let io_text = Paragraph::new("I/O: monitoring...")
-        .style(Style::default().fg(theme.muted));
+    // I/O speeds
+    let io_text = Paragraph::new(format!(
+        "I/O: R {} │ W {}",
+        format_speed(data.read_speed),
+        format_speed(data.write_speed)
+    )).style(Style::default().fg(theme.primary));
     frame.render_widget(io_text, disk_layout[2]);
 }
 
