@@ -1,3 +1,4 @@
+use std::time::Instant;
 use anyhow::Result;
 
 use crate::collectors::Collectors;
@@ -13,6 +14,7 @@ pub struct App {
     pub should_quit: bool,
     pub show_help: bool,
     pub status_message: Option<String>,
+    status_message_time: Option<Instant>,
 }
 
 impl App {
@@ -32,6 +34,7 @@ impl App {
             should_quit: false,
             show_help: false,
             status_message: None,
+            status_message_time: None,
         })
     }
 
@@ -90,20 +93,25 @@ impl App {
         match self.config.save() {
             Ok(_) => {
                 if let Some(path) = Config::default_path() {
-                    self.status_message = Some(format!("Saved to {}", path.display()));
+                    self.status_message = Some(format!("✓ Saved to {}", path.display()));
                 } else {
-                    self.status_message = Some("Config saved!".to_string());
+                    self.status_message = Some("✓ Config saved!".to_string());
                 }
             }
             Err(e) => {
-                self.status_message = Some(format!("Save failed: {}", e));
+                self.status_message = Some(format!("✗ Save failed: {}", e));
             }
         }
+        self.status_message_time = Some(Instant::now());
     }
 
-    /// Clear status message
-    #[allow(dead_code)]
-    pub fn clear_status(&mut self) {
-        self.status_message = None;
+    /// Clear status message if it's been shown long enough (3 seconds)
+    pub fn clear_expired_status(&mut self) {
+        if let Some(time) = self.status_message_time {
+            if time.elapsed().as_secs() >= 3 {
+                self.status_message = None;
+                self.status_message_time = None;
+            }
+        }
     }
 }

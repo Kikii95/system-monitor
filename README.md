@@ -2,7 +2,7 @@
 
 A blazingly fast, ultra-lightweight system performance monitor for your terminal.
 
-![Version](https://img.shields.io/badge/version-1.2.0-green)
+![Version](https://img.shields.io/badge/version-1.2.1-green)
 ![Rust](https://img.shields.io/badge/rust-1.75%2B-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-lightgrey)

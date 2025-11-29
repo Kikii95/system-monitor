@@ -21,7 +21,7 @@ use crate::config::Config;
 #[derive(Parser, Debug)]
 #[command(name = "system-monitor")]
 #[command(author = "kiki")]
-#[command(version = "1.1.0")]
+#[command(version = "1.2.1")]
 #[command(about = "Ultra-lightweight system performance monitor", long_about = None)]
 struct Args {
     /// Refresh rate in seconds (overrides config file)
@@ -221,5 +221,8 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> 
             app.update()?;
             last_tick = std::time::Instant::now();
         }
+
+        // Clear expired status messages
+        app.clear_expired_status();
     }
 }
