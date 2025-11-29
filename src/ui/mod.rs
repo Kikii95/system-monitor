@@ -525,23 +525,33 @@ fn render_system_info(frame: &mut Frame, app: &App, area: Rect) {
 fn render_footer(frame: &mut Frame, app: &App, area: Rect) {
     let theme = &app.theme;
 
-    let footer = Paragraph::new(Line::from(vec![
+    let mut spans = vec![
         Span::styled(" [Q]", Style::default().fg(theme.accent)),
         Span::styled("uit ", Style::default().fg(theme.muted)),
         Span::styled("[T]", Style::default().fg(theme.accent)),
         Span::styled("heme ", Style::default().fg(theme.muted)),
-        Span::styled("[R]", Style::default().fg(theme.accent)),
-        Span::styled("efresh ", Style::default().fg(theme.muted)),
+        Span::styled("[S]", Style::default().fg(theme.accent)),
+        Span::styled("ave ", Style::default().fg(theme.muted)),
         Span::styled("[H/?]", Style::default().fg(theme.accent)),
         Span::styled("elp ", Style::default().fg(theme.muted)),
         Span::styled("[+/-]", Style::default().fg(theme.accent)),
         Span::styled("Rate ", Style::default().fg(theme.muted)),
-        Span::styled(
-            format!("│ {} │ {:.1}s │ v0.1.0", theme.name, app.config.refresh_rate),
-            Style::default().fg(theme.secondary)
-        ),
-    ]));
+    ];
 
+    // Show status message or theme info
+    if let Some(ref msg) = app.status_message {
+        spans.push(Span::styled(
+            format!("│ {} ", msg),
+            Style::default().fg(theme.success)
+        ));
+    } else {
+        spans.push(Span::styled(
+            format!("│ {} │ {:.1}s │ v0.2.0", theme.name, app.config.refresh_rate),
+            Style::default().fg(theme.secondary)
+        ));
+    }
+
+    let footer = Paragraph::new(Line::from(spans));
     frame.render_widget(footer, area);
 }
 
@@ -553,7 +563,7 @@ fn render_help_overlay(frame: &mut Frame, app: &App) {
 
     // Center the popup
     let popup_width = 50u16.min(area.width.saturating_sub(4));
-    let popup_height = 18u16.min(area.height.saturating_sub(4));
+    let popup_height = 20u16.min(area.height.saturating_sub(4));
     let popup_x = (area.width.saturating_sub(popup_width)) / 2;
     let popup_y = (area.height.saturating_sub(popup_height)) / 2;
 
@@ -590,6 +600,10 @@ fn render_help_overlay(frame: &mut Frame, app: &App) {
         Line::from(vec![
             Span::styled("  - / _      ", Style::default().fg(theme.primary)),
             Span::styled("Slower refresh rate", Style::default().fg(theme.muted)),
+        ]),
+        Line::from(vec![
+            Span::styled("  S          ", Style::default().fg(theme.primary)),
+            Span::styled("Save config to file", Style::default().fg(theme.muted)),
         ]),
         Line::from(""),
         Line::from(Span::styled("THEMES", Style::default().fg(theme.accent).bold())),

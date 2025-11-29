@@ -96,4 +96,43 @@ impl Config {
         self.compact_mode = compact;
         self
     }
+
+    /// Save config to default location
+    pub fn save(&self) -> Result<()> {
+        if let Some(config_dir) = dirs::config_dir() {
+            let app_dir = config_dir.join("system-monitor");
+            std::fs::create_dir_all(&app_dir)?;
+            let config_path = app_dir.join("config.toml");
+            let content = toml::to_string_pretty(self)?;
+            std::fs::write(&config_path, content)?;
+        }
+        Ok(())
+    }
+
+    /// Get default config path
+    pub fn default_path() -> Option<std::path::PathBuf> {
+        dirs::config_dir().map(|d| d.join("system-monitor").join("config.toml"))
+    }
+
+    /// Create default config file if it doesn't exist
+    pub fn create_default_if_missing() -> Result<bool> {
+        if let Some(config_dir) = dirs::config_dir() {
+            let app_dir = config_dir.join("system-monitor");
+            let config_path = app_dir.join("config.toml");
+
+            if !config_path.exists() {
+                std::fs::create_dir_all(&app_dir)?;
+                let default_config = Self::default();
+                let content = format!(
+                    "# System Monitor Configuration\n\
+                    # Location: ~/.config/system-monitor/config.toml\n\n\
+                    {}\n",
+                    toml::to_string_pretty(&default_config)?
+                );
+                std::fs::write(&config_path, content)?;
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
 }

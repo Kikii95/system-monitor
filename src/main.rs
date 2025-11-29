@@ -21,7 +21,7 @@ use crate::config::Config;
 #[derive(Parser, Debug)]
 #[command(name = "system-monitor")]
 #[command(author = "kiki")]
-#[command(version = "0.1.0")]
+#[command(version = "0.2.0")]
 #[command(about = "Ultra-lightweight system performance monitor", long_about = None)]
 struct Args {
     /// Refresh rate in seconds
@@ -43,10 +43,35 @@ struct Args {
     /// Path to config file
     #[arg(short = 'C', long)]
     config: Option<String>,
+
+    /// Create default config file and exit
+    #[arg(long)]
+    init_config: bool,
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
+
+    // Handle --init-config
+    if args.init_config {
+        match Config::create_default_if_missing() {
+            Ok(true) => {
+                if let Some(path) = Config::default_path() {
+                    println!("Created config file: {}", path.display());
+                }
+            }
+            Ok(false) => {
+                if let Some(path) = Config::default_path() {
+                    println!("Config file already exists: {}", path.display());
+                }
+            }
+            Err(e) => {
+                eprintln!("Failed to create config: {}", e);
+                std::process::exit(1);
+            }
+        }
+        return Ok(());
+    }
 
     // Load config (CLI args override config file)
     let config = Config::load(args.config.as_deref())?
@@ -117,6 +142,9 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> 
                         }
                         KeyCode::Char('-') | KeyCode::Char('_') => {
                             app.increase_refresh_rate();
+                        }
+                        KeyCode::Char('s') | KeyCode::Char('S') => {
+                            app.save_config();
                         }
                         KeyCode::Esc => {
                             if app.show_help {

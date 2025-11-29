@@ -12,6 +12,7 @@ pub struct App {
     pub theme_index: usize,
     pub should_quit: bool,
     pub show_help: bool,
+    pub status_message: Option<String>,
 }
 
 impl App {
@@ -30,6 +31,7 @@ impl App {
             theme_index,
             should_quit: false,
             show_help: false,
+            status_message: None,
         })
     }
 
@@ -47,6 +49,7 @@ impl App {
     pub fn cycle_theme(&mut self) {
         self.theme_index = (self.theme_index + 1) % THEMES.len();
         self.theme = THEMES[self.theme_index].clone();
+        self.config.theme = self.theme.name.to_string();
     }
 
     /// Toggle help overlay
@@ -62,5 +65,23 @@ impl App {
     /// Decrease refresh rate (faster updates)
     pub fn decrease_refresh_rate(&mut self) {
         self.config.refresh_rate = (self.config.refresh_rate - 0.5).max(0.1);
+    }
+
+    /// Save current config to file
+    pub fn save_config(&mut self) {
+        match self.config.save() {
+            Ok(_) => {
+                self.status_message = Some("Config saved!".to_string());
+            }
+            Err(e) => {
+                self.status_message = Some(format!("Save failed: {}", e));
+            }
+        }
+    }
+
+    /// Clear status message
+    #[allow(dead_code)]
+    pub fn clear_status(&mut self) {
+        self.status_message = None;
     }
 }
