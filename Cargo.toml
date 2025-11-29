@@ -1,6 +1,6 @@
 [package]
 name = "system-monitor"
-version = "0.2.0"
+version = "1.0.0"
 edition = "2021"
 authors = ["kiki"]
 description = "Ultra-lightweight system performance monitor TUI"

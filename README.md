@@ -2,18 +2,19 @@
 
 Ultra-lightweight system performance monitor TUI written in Rust.
 
-![Version](https://img.shields.io/badge/version-0.1.0-green)
+![Version](https://img.shields.io/badge/version-1.0.0-green)
 ![Rust](https://img.shields.io/badge/rust-1.75%2B-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## Features
 
 - 🚀 **Ultra-lightweight**: < 0.5% CPU, < 10MB RAM
-- 🎨 **Multiple themes**: Hacker (green), Matrix, Minimal, Cyberpunk
-- 📊 **Real-time metrics**: CPU, Memory, GPU, Network, Disk, Processes
+- 🎨 **4 Themes**: Hacker (green), Matrix, Minimal, Cyberpunk
+- 📊 **Real-time metrics**: CPU, Memory, GPU (NVIDIA), Network, Disk, Processes
 - 📈 **60-second history**: Sparkline graphs for all metrics
-- ⚙️ **Configurable**: TOML config file + CLI arguments
-- 🖥️ **Cross-platform**: Linux, Windows, macOS
+- ⚙️ **Persistent config**: TOML config file (~/.config/system-monitor/)
+- ⌨️ **Full keybindings**: Theme switching, refresh control, help overlay
+- 🖥️ **Cross-platform**: Linux, WSL2, Windows
 
 ## Installation
 
@@ -43,20 +44,34 @@ system-monitor --no-gpu
 
 # Compact mode
 system-monitor --compact
+
+# Custom config file
+system-monitor --config /path/to/config.toml
+
+# Create default config file
+system-monitor --init-config
 ```
 
 ## Keybindings
 
 | Key | Action |
 |-----|--------|
-| `Q` | Quit |
+| `Q` / `Esc` | Quit |
 | `T` | Cycle theme |
 | `R` | Force refresh |
-| `H` | Toggle help |
+| `H` / `F1` / `?` | Toggle help overlay |
+| `+` / `=` | Decrease refresh rate (faster) |
+| `-` / `_` | Increase refresh rate (slower) |
+| `S` | Save current config to file |
 
 ## Configuration
 
-Create `~/.config/system-monitor/config.toml`:
+Config file location: `~/.config/system-monitor/config.toml`
+
+```bash
+# Create default config file
+system-monitor --init-config
+```
 
 ```toml
 refresh_rate = 1.0
@@ -66,6 +81,8 @@ compact_mode = false
 show_graphs = true
 graph_history = 60
 ```
+
+> **Note**: CLI arguments override config file values. Press `S` at runtime to save current settings.
 
 ## Themes
 

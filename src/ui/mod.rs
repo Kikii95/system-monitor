@@ -549,7 +549,7 @@ fn render_footer(frame: &mut Frame, app: &App, area: Rect) {
         ));
     } else {
         spans.push(Span::styled(
-            format!("│ {} │ {:.1}s │ v0.2.0", theme.name, app.config.refresh_rate),
+            format!("│ {} │ {:.1}s │ v1.0.0", theme.name, app.config.refresh_rate),
             Style::default().fg(theme.secondary)
         ));
     }
@@ -576,7 +576,7 @@ fn render_help_overlay(frame: &mut Frame, app: &App) {
     frame.render_widget(Clear, popup_area);
 
     let help_text = vec![
-        Line::from(Span::styled("SYSTEM MONITOR v0.1.0", Style::default().fg(theme.primary).bold())),
+        Line::from(Span::styled("SYSTEM MONITOR v1.0.0", Style::default().fg(theme.primary).bold())),
         Line::from(""),
         Line::from(Span::styled("KEYBINDINGS", Style::default().fg(theme.accent).bold())),
         Line::from(""),
