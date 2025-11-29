@@ -28,7 +28,7 @@ struct Args {
     #[arg(short, long, default_value_t = 1.0)]
     refresh: f64,
 
-    /// Theme to use (hacker, matrix, minimal, cyberpunk)
+    /// Theme: hacker, matrix, minimal, cyberpunk, dracula, nord, gruvbox, tokyo, ocean
     #[arg(short, long, default_value = "hacker")]
     theme: String,
 

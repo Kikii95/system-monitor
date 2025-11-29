@@ -86,10 +86,17 @@ graph_history = 60
 
 ## Themes
 
-- **hacker**: Green Matrix-style (default)
-- **matrix**: Darker green
-- **minimal**: Monochrome
-- **cyberpunk**: Red/Cyan
+| Theme | Colors | Vibe |
+|-------|--------|------|
+| **hacker** | Green | Matrix-style (default) |
+| **matrix** | Dark green | Classic terminal |
+| **minimal** | Monochrome | Clean & simple |
+| **cyberpunk** | Red/Cyan | Neon nights |
+| **dracula** | Purple/Pink | Vampire approved |
+| **nord** | Arctic blue | Scandinavian cool |
+| **gruvbox** | Warm orange | Retro vibes |
+| **tokyo** | Blue/Purple | Tokyo Night |
+| **ocean** | Deep blue | Under the sea |
 
 ## Performance Targets
 
