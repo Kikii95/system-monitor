@@ -1,5 +1,6 @@
 use thiserror::Error;
 
+#[allow(dead_code)]
 #[derive(Error, Debug)]
 pub enum MonitorError {
     #[error("Failed to initialize system info: {0}")]

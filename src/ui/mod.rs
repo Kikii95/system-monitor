@@ -17,7 +17,7 @@ use crate::collectors::process::format_proc_memory;
 
 /// Main render function
 pub fn render(frame: &mut Frame, app: &App) {
-    let theme = &app.theme;
+    let _theme = &app.theme;
 
     // Main layout: Header, Content, Footer
     let main_chunks = Layout::default()
@@ -73,6 +73,11 @@ pub fn render(frame: &mut Frame, app: &App) {
 
     // Render footer
     render_footer(frame, app, main_chunks[2]);
+
+    // Help overlay (on top of everything)
+    if app.show_help {
+        render_help_overlay(frame, app);
+    }
 }
 
 fn render_header(frame: &mut Frame, app: &App, area: Rect) {
@@ -527,15 +532,89 @@ fn render_footer(frame: &mut Frame, app: &App, area: Rect) {
         Span::styled("heme ", Style::default().fg(theme.muted)),
         Span::styled("[R]", Style::default().fg(theme.accent)),
         Span::styled("efresh ", Style::default().fg(theme.muted)),
-        Span::styled("[H]", Style::default().fg(theme.accent)),
+        Span::styled("[H/?]", Style::default().fg(theme.accent)),
         Span::styled("elp ", Style::default().fg(theme.muted)),
+        Span::styled("[+/-]", Style::default().fg(theme.accent)),
+        Span::styled("Rate ", Style::default().fg(theme.muted)),
         Span::styled(
-            format!("│ {} │ v0.1.0", theme.name),
+            format!("│ {} │ {:.1}s │ v0.1.0", theme.name, app.config.refresh_rate),
             Style::default().fg(theme.secondary)
         ),
     ]));
 
     frame.render_widget(footer, area);
+}
+
+fn render_help_overlay(frame: &mut Frame, app: &App) {
+    use ratatui::widgets::Clear;
+
+    let theme = &app.theme;
+    let area = frame.area();
+
+    // Center the popup
+    let popup_width = 50u16.min(area.width.saturating_sub(4));
+    let popup_height = 18u16.min(area.height.saturating_sub(4));
+    let popup_x = (area.width.saturating_sub(popup_width)) / 2;
+    let popup_y = (area.height.saturating_sub(popup_height)) / 2;
+
+    let popup_area = Rect::new(popup_x, popup_y, popup_width, popup_height);
+
+    // Clear background
+    frame.render_widget(Clear, popup_area);
+
+    let help_text = vec![
+        Line::from(Span::styled("SYSTEM MONITOR v0.1.0", Style::default().fg(theme.primary).bold())),
+        Line::from(""),
+        Line::from(Span::styled("KEYBINDINGS", Style::default().fg(theme.accent).bold())),
+        Line::from(""),
+        Line::from(vec![
+            Span::styled("  Q / Esc    ", Style::default().fg(theme.primary)),
+            Span::styled("Quit application", Style::default().fg(theme.muted)),
+        ]),
+        Line::from(vec![
+            Span::styled("  T          ", Style::default().fg(theme.primary)),
+            Span::styled("Cycle through themes", Style::default().fg(theme.muted)),
+        ]),
+        Line::from(vec![
+            Span::styled("  R          ", Style::default().fg(theme.primary)),
+            Span::styled("Force refresh data", Style::default().fg(theme.muted)),
+        ]),
+        Line::from(vec![
+            Span::styled("  H / F1 / ? ", Style::default().fg(theme.primary)),
+            Span::styled("Toggle help overlay", Style::default().fg(theme.muted)),
+        ]),
+        Line::from(vec![
+            Span::styled("  + / =      ", Style::default().fg(theme.primary)),
+            Span::styled("Faster refresh rate", Style::default().fg(theme.muted)),
+        ]),
+        Line::from(vec![
+            Span::styled("  - / _      ", Style::default().fg(theme.primary)),
+            Span::styled("Slower refresh rate", Style::default().fg(theme.muted)),
+        ]),
+        Line::from(""),
+        Line::from(Span::styled("THEMES", Style::default().fg(theme.accent).bold())),
+        Line::from(""),
+        Line::from(vec![
+            Span::styled("  hacker  ", Style::default().fg(theme.success)),
+            Span::styled("matrix  ", Style::default().fg(theme.primary)),
+            Span::styled("minimal  ", Style::default().fg(theme.muted)),
+            Span::styled("cyberpunk", Style::default().fg(theme.danger)),
+        ]),
+        Line::from(""),
+        Line::from(Span::styled("Press Esc or H to close", Style::default().fg(theme.muted).italic())),
+    ];
+
+    let help = Paragraph::new(help_text)
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .border_style(Style::default().fg(theme.border))
+                .title(" HELP ")
+                .title_style(Style::default().fg(theme.primary).bold())
+        )
+        .alignment(ratatui::layout::Alignment::Center);
+
+    frame.render_widget(help, popup_area);
 }
 
 /// Truncate string to max length

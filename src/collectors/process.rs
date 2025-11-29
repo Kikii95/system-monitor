@@ -1,6 +1,7 @@
 use anyhow::Result;
 use sysinfo::{System, ProcessesToUpdate, ProcessStatus};
 
+#[allow(dead_code)]
 #[derive(Clone, Default)]
 pub struct ProcessInfo {
     pub pid: u32,

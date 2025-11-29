@@ -53,4 +53,14 @@ impl App {
     pub fn toggle_help(&mut self) {
         self.show_help = !self.show_help;
     }
+
+    /// Increase refresh rate (slower updates)
+    pub fn increase_refresh_rate(&mut self) {
+        self.config.refresh_rate = (self.config.refresh_rate + 0.5).min(10.0);
+    }
+
+    /// Decrease refresh rate (faster updates)
+    pub fn decrease_refresh_rate(&mut self) {
+        self.config.refresh_rate = (self.config.refresh_rate - 0.5).max(0.1);
+    }
 }

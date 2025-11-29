@@ -6,13 +6,13 @@ pub mod network;
 pub mod disk;
 pub mod process;
 
-pub use cpu::{CpuCollector, CpuData};
-pub use memory::{MemoryCollector, MemoryData};
-pub use system::{SystemCollector, SystemData};
-pub use gpu::{GpuCollector, GpuData};
-pub use network::{NetworkCollector, NetworkData};
-pub use disk::{DiskCollector, DiskData};
-pub use process::{ProcessCollector, ProcessData, ProcessInfo};
+pub use cpu::CpuCollector;
+pub use memory::MemoryCollector;
+pub use system::SystemCollector;
+pub use gpu::GpuCollector;
+pub use network::NetworkCollector;
+pub use disk::DiskCollector;
+pub use process::ProcessCollector;
 
 use anyhow::Result;
 use crate::config::Config;

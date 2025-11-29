@@ -2,6 +2,7 @@ use anyhow::Result;
 
 use super::History60;
 
+#[allow(dead_code)]
 #[derive(Clone, Default)]
 pub struct GpuData {
     pub available: bool,
@@ -23,6 +24,7 @@ pub struct GpuData {
     pub pcie_width: u32,
 }
 
+#[allow(dead_code)]
 pub struct GpuCollector {
     #[cfg(feature = "gpu")]
     nvml: Option<nvml_wrapper::Nvml>,
@@ -142,6 +144,7 @@ impl GpuCollector {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn is_available(&self) -> bool {
         self.data.available
     }

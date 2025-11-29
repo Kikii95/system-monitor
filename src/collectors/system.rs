@@ -1,6 +1,7 @@
 use anyhow::Result;
 use sysinfo::System;
 
+#[allow(dead_code)]
 #[derive(Clone, Default)]
 pub struct SystemData {
     pub os_name: String,

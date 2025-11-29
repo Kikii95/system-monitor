@@ -85,12 +85,14 @@ fn main() -> Result<()> {
 }
 
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> {
-    let tick_rate = std::time::Duration::from_secs_f64(app.config.refresh_rate);
     let mut last_tick = std::time::Instant::now();
 
     loop {
         // Draw UI
         terminal.draw(|frame| ui::render(frame, app))?;
+
+        // Dynamic tick rate (can be changed at runtime)
+        let tick_rate = std::time::Duration::from_secs_f64(app.config.refresh_rate);
 
         // Poll for events with timeout
         let timeout = tick_rate.saturating_sub(last_tick.elapsed());
@@ -107,8 +109,21 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> 
                         KeyCode::Char('r') | KeyCode::Char('R') => {
                             app.force_refresh();
                         }
-                        KeyCode::Char('h') | KeyCode::Char('H') => {
+                        KeyCode::Char('h') | KeyCode::Char('H') | KeyCode::Char('?') | KeyCode::F(1) => {
                             app.toggle_help();
+                        }
+                        KeyCode::Char('+') | KeyCode::Char('=') => {
+                            app.decrease_refresh_rate();
+                        }
+                        KeyCode::Char('-') | KeyCode::Char('_') => {
+                            app.increase_refresh_rate();
+                        }
+                        KeyCode::Esc => {
+                            if app.show_help {
+                                app.show_help = false;
+                            } else {
+                                app.should_quit = true;
+                            }
                         }
                         _ => {}
                     }
