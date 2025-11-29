@@ -59,12 +59,30 @@ impl App {
 
     /// Increase refresh rate (slower updates)
     pub fn increase_refresh_rate(&mut self) {
-        self.config.refresh_rate = (self.config.refresh_rate + 0.5).min(10.0);
+        // Use predefined steps for clean values
+        const STEPS: &[f64] = &[0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0];
+        let current = self.config.refresh_rate;
+        for &step in STEPS {
+            if step > current + 0.01 {
+                self.config.refresh_rate = step;
+                return;
+            }
+        }
+        self.config.refresh_rate = 10.0;
     }
 
     /// Decrease refresh rate (faster updates)
     pub fn decrease_refresh_rate(&mut self) {
-        self.config.refresh_rate = (self.config.refresh_rate - 0.5).max(0.1);
+        // Use predefined steps for clean values
+        const STEPS: &[f64] = &[0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0];
+        let current = self.config.refresh_rate;
+        for &step in STEPS.iter().rev() {
+            if step < current - 0.01 {
+                self.config.refresh_rate = step;
+                return;
+            }
+        }
+        self.config.refresh_rate = 0.25;
     }
 
     /// Save current config to file

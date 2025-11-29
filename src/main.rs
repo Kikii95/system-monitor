@@ -24,13 +24,13 @@ use crate::config::Config;
 #[command(version = "1.1.0")]
 #[command(about = "Ultra-lightweight system performance monitor", long_about = None)]
 struct Args {
-    /// Refresh rate in seconds
-    #[arg(short, long, default_value_t = 1.0)]
-    refresh: f64,
+    /// Refresh rate in seconds (overrides config file)
+    #[arg(short, long)]
+    refresh: Option<f64>,
 
-    /// Theme: hacker, matrix, minimal, cyberpunk, dracula, nord, gruvbox, tokyo, ocean
-    #[arg(short, long, default_value = "hacker")]
-    theme: String,
+    /// Theme (overrides config file): hacker, matrix, minimal, cyberpunk, dracula, nord, gruvbox, tokyo, ocean
+    #[arg(short, long)]
+    theme: Option<String>,
 
     /// Disable GPU monitoring
     #[arg(long)]
@@ -115,12 +115,22 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Load config (CLI args override config file)
-    let config = Config::load(args.config.as_deref())?
-        .with_refresh_rate(args.refresh)
-        .with_theme(&args.theme)
-        .with_gpu(!args.no_gpu)
-        .with_compact(args.compact);
+    // Load config (CLI args override config file only if provided)
+    let mut config = Config::load(args.config.as_deref())?;
+
+    // Apply CLI overrides only if explicitly provided
+    if let Some(refresh) = args.refresh {
+        config = config.with_refresh_rate(refresh);
+    }
+    if let Some(ref theme) = args.theme {
+        config = config.with_theme(theme);
+    }
+    if args.no_gpu {
+        config = config.with_gpu(false);
+    }
+    if args.compact {
+        config = config.with_compact(true);
+    }
 
     // Setup terminal
     enable_raw_mode()?;
